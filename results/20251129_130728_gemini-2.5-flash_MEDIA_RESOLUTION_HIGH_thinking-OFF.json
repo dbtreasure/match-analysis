@@ -1,0 +1,142 @@
+{
+  "model": "gemini-2.5-flash",
+  "media_resolution": "MEDIA_RESOLUTION_HIGH",
+  "video_file": "Adam Wardzinski vs Roberto Jimenez - 2025 IBJJF Pan Championship [oWVUjZm-ZUc].webm",
+  "prompt": "Analyze this BJJ match video. For every scoring change (points or advantages), record:\n- The exact timestamp in seconds from the start of the video\n- Which athlete scored\n- Points and/or advantages gained or lost\n- The action that caused the score\n- The applicable IBJJF rule\n\nBe precise with timestamps - watch for when the referee signals the score.",
+  "analysis": {
+    "athlete_1_name": "Adam Piotr Wardzinski",
+    "athlete_1_gi_color": "White",
+    "athlete_2_name": "Roberto Francisco Jimenez",
+    "athlete_2_gi_color": "Blue",
+    "events": [
+      {
+        "timestamp_seconds": 31,
+        "athlete": "Roberto Francisco Jimenez",
+        "points_change": 2,
+        "advantages_change": 0,
+        "action": "Takedown (single leg)",
+        "ibjjf_rule": "Art. 5, Item 10",
+        "running_score": "0-2"
+      },
+      {
+        "timestamp_seconds": 72,
+        "athlete": "Roberto Francisco Jimenez",
+        "points_change": 0,
+        "advantages_change": 1,
+        "action": "Near sweep (Adam defends butterfly guard attempt)",
+        "ibjjf_rule": "Art. 5, Item 15",
+        "running_score": "0-2 (1 adv)"
+      },
+      {
+        "timestamp_seconds": 126,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": 2,
+        "advantages_change": 0,
+        "action": "Sweep from butterfly guard",
+        "ibjjf_rule": "Art. 5, Item 7",
+        "running_score": "2-2 (1 adv)"
+      },
+      {
+        "timestamp_seconds": 134,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": 3,
+        "advantages_change": 0,
+        "action": "Guard pass",
+        "ibjjf_rule": "Art. 5, Item 5",
+        "running_score": "5-2 (1 adv)"
+      },
+      {
+        "timestamp_seconds": 140,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": 4,
+        "advantages_change": 0,
+        "action": "Mount",
+        "ibjjf_rule": "Art. 5, Item 4",
+        "running_score": "9-2 (1 adv)"
+      },
+      {
+        "timestamp_seconds": 147,
+        "athlete": "Roberto Francisco Jimenez",
+        "points_change": 0,
+        "advantages_change": -1,
+        "action": "Advantage removed (scoreboard correction)",
+        "ibjjf_rule": "IBJJF Scoreboard Correction (Implicit)",
+        "running_score": "9-2"
+      },
+      {
+        "timestamp_seconds": 253,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": 2,
+        "advantages_change": 0,
+        "action": "Knee on belly",
+        "ibjjf_rule": "Art. 5, Item 11",
+        "running_score": "11-2"
+      },
+      {
+        "timestamp_seconds": 256,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": 4,
+        "advantages_change": 0,
+        "action": "Remount (from knee on belly to mount)",
+        "ibjjf_rule": "Art. 5, Item 4",
+        "running_score": "15-2"
+      },
+      {
+        "timestamp_seconds": 257,
+        "athlete": "Roberto Francisco Jimenez",
+        "points_change": 2,
+        "advantages_change": 0,
+        "action": "Scoreboard correction/adjustment by officials (Adam gains +1, Roberto gains +2 points)",
+        "ibjjf_rule": "IBJJF Scoreboard Correction (Implicit)",
+        "running_score": "16-4"
+      },
+      {
+        "timestamp_seconds": 306,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": -7,
+        "advantages_change": 0,
+        "action": "Scoreboard correction/adjustment by officials (7 points removed from Adam)",
+        "ibjjf_rule": "IBJJF Scoreboard Correction (Implicit)",
+        "running_score": "9-4"
+      },
+      {
+        "timestamp_seconds": 521,
+        "athlete": "Roberto Francisco Jimenez",
+        "points_change": 2,
+        "advantages_change": 0,
+        "action": "Sweep",
+        "ibjjf_rule": "Art. 5, Item 7",
+        "running_score": "9-6"
+      },
+      {
+        "timestamp_seconds": 548,
+        "athlete": "Roberto Francisco Jimenez",
+        "points_change": 0,
+        "advantages_change": 1,
+        "action": "Near sweep",
+        "ibjjf_rule": "Art. 5, Item 15",
+        "running_score": "9-6 (1 adv)"
+      },
+      {
+        "timestamp_seconds": 616,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": 4,
+        "advantages_change": 0,
+        "action": "Mount",
+        "ibjjf_rule": "Art. 5, Item 4",
+        "running_score": "13-6 (1 adv)"
+      },
+      {
+        "timestamp_seconds": 617,
+        "athlete": "Roberto Francisco Jimenez",
+        "points_change": -2,
+        "advantages_change": -1,
+        "action": "Final scoreboard correction/adjustment by officials (Adam gains +3, Roberto loses -2 points and -1 advantage)",
+        "ibjjf_rule": "IBJJF Scoreboard Correction (Implicit)",
+        "running_score": "16-4"
+      }
+    ],
+    "final_score": "16-4",
+    "winner": "Adam Piotr Wardzinski"
+  }
+}

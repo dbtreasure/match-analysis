@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ground Truth Editor</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #1a1a1a;
+      color: #e0e0e0;
+    }
+    h1 { margin-bottom: 10px; }
+    .nav { margin-bottom: 20px; }
+    .nav a { color: #60a5fa; }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 8px 16px;
+      font-size: 14px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover { background: #2563eb; }
+    button.secondary { background: #4b5563; }
+    button.secondary:hover { background: #374151; }
+    button.danger { background: #dc2626; }
+    button.danger:hover { background: #b91c1c; }
+    button.small {
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+    .status {
+      padding: 8px 16px;
+      background: #22c55e;
+      border-radius: 4px;
+      display: none;
+    }
+    .status.show { display: inline-block; }
+    video {
+      width: 100%;
+      max-width: 800px;
+      background: #000;
+      border-radius: 8px;
+    }
+    .video-controls {
+      margin: 10px 0;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .current-time {
+      font-family: monospace;
+      font-size: 18px;
+      background: #2a2a2a;
+      padding: 8px 12px;
+      border-radius: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #333;
+    }
+    th { background: #2a2a2a; font-weight: 600; }
+    td input, td select {
+      width: 100%;
+      padding: 6px;
+      font-size: 14px;
+      background: #2a2a2a;
+      color: #e0e0e0;
+      border: 1px solid #444;
+      border-radius: 4px;
+    }
+    td input[type="number"] { width: 70px; }
+    td.actions {
+      white-space: nowrap;
+      width: 120px;
+    }
+    td.actions button { margin: 2px; }
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h1>Ground Truth Editor</h1>
+  <div class="nav"><a href="/">Back to Viewer</a></div>
+
+  <div class="controls">
+    <button onclick="addRow()">+ Add Event</button>
+    <button onclick="addRowAtCurrentTime()">+ Add at Current Time</button>
+    <button class="secondary" onclick="loadFromResult()">Import from Result...</button>
+    <button onclick="save()">Save Ground Truth</button>
+    <span class="status" id="status">Saved!</span>
+  </div>
+
+  <video id="video" controls>
+    <source src="/video/Adam Wardzinski vs Roberto Jimenez - 2025 IBJJF Pan Championship [oWVUjZm-ZUc].webm" type="video/webm">
+  </video>
+
+  <div class="video-controls">
+    <span>Current time:</span>
+    <span class="current-time" id="currentTime">0:00</span>
+    <button class="small secondary" onclick="seekBack(5)">-5s</button>
+    <button class="small secondary" onclick="seekForward(5)">+5s</button>
+    <button class="small secondary" onclick="useCurrentTime()">Use for selected row</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Time (sec)</th>
+        <th>Athlete</th>
+        <th>Points</th>
+        <th>Adv</th>
+        <th>Action</th>
+        <th>IBJJF Rule</th>
+        <th>Running Score</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="events"></tbody>
+  </table>
+
+  <div class="empty-state" id="emptyState">
+    No events yet. Click "+ Add Event" or import from a result file.
+  </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const tbody = document.getElementById('events');
+    const currentTimeDisplay = document.getElementById('currentTime');
+    const emptyState = document.getElementById('emptyState');
+    const statusEl = document.getElementById('status');
+
+    let events = [];
+    let selectedRowIndex = null;
+
+    // Athletes for dropdown
+    const athletes = [
+      "Adam Piotr Wardzinski",
+      "Roberto Francisco Jimenez"
+    ];
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    video.addEventListener('timeupdate', () => {
+      currentTimeDisplay.textContent = formatTime(Math.floor(video.currentTime));
+    });
+
+    function seekBack(sec) {
+      video.currentTime = Math.max(0, video.currentTime - sec);
+    }
+
+    function seekForward(sec) {
+      video.currentTime = video.currentTime + sec;
+    }
+
+    function useCurrentTime() {
+      if (selectedRowIndex !== null) {
+        events[selectedRowIndex].timestamp_seconds = Math.floor(video.currentTime);
+        render();
+      }
+    }
+
+    function createEmptyEvent() {
+      return {
+        timestamp_seconds: Math.floor(video.currentTime),
+        athlete: athletes[0],
+        points_change: 0,
+        advantages_change: 0,
+        action: "",
+        ibjjf_rule: "",
+        running_score: ""
+      };
+    }
+
+    function addRow() {
+      events.push(createEmptyEvent());
+      selectedRowIndex = events.length - 1;
+      render();
+    }
+
+    function addRowAtCurrentTime() {
+      const newEvent = createEmptyEvent();
+      // Find insertion point
+      let insertIndex = events.findIndex(e => e.timestamp_seconds > newEvent.timestamp_seconds);
+      if (insertIndex === -1) insertIndex = events.length;
+      events.splice(insertIndex, 0, newEvent);
+      selectedRowIndex = insertIndex;
+      render();
+    }
+
+    function deleteRow(index) {
+      events.splice(index, 1);
+      if (selectedRowIndex === index) selectedRowIndex = null;
+      else if (selectedRowIndex > index) selectedRowIndex--;
+      render();
+    }
+
+    function moveUp(index) {
+      if (index > 0) {
+        [events[index], events[index - 1]] = [events[index - 1], events[index]];
+        if (selectedRowIndex === index) selectedRowIndex--;
+        else if (selectedRowIndex === index - 1) selectedRowIndex++;
+        render();
+      }
+    }
+
+    function moveDown(index) {
+      if (index < events.length - 1) {
+        [events[index], events[index + 1]] = [events[index + 1], events[index]];
+        if (selectedRowIndex === index) selectedRowIndex++;
+        else if (selectedRowIndex === index + 1) selectedRowIndex--;
+        render();
+      }
+    }
+
+    function selectRow(index) {
+      selectedRowIndex = index;
+      video.currentTime = events[index].timestamp_seconds;
+      render();
+    }
+
+    function updateEvent(index, field, value) {
+      if (field === 'timestamp_seconds' || field === 'points_change' || field === 'advantages_change') {
+        events[index][field] = parseInt(value) || 0;
+      } else {
+        events[index][field] = value;
+      }
+    }
+
+    function render() {
+      emptyState.style.display = events.length === 0 ? 'block' : 'none';
+
+      tbody.innerHTML = events.map((event, i) => `
+        <tr class="${selectedRowIndex === i ? 'selected' : ''}" onclick="selectRow(${i})" style="${selectedRowIndex === i ? 'background: #333;' : ''}">
+          <td><input type="number" value="${event.timestamp_seconds}" onchange="updateEvent(${i}, 'timestamp_seconds', this.value)" onclick="event.stopPropagation()"></td>
+          <td>
+            <select onchange="updateEvent(${i}, 'athlete', this.value)" onclick="event.stopPropagation()">
+              ${athletes.map(a => `<option value="${a}" ${event.athlete === a ? 'selected' : ''}>${a.split(' ')[0]}</option>`).join('')}
+            </select>
+          </td>
+          <td><input type="number" value="${event.points_change}" onchange="updateEvent(${i}, 'points_change', this.value)" onclick="event.stopPropagation()"></td>
+          <td><input type="number" value="${event.advantages_change}" onchange="updateEvent(${i}, 'advantages_change', this.value)" onclick="event.stopPropagation()"></td>
+          <td><input type="text" value="${event.action}" onchange="updateEvent(${i}, 'action', this.value)" onclick="event.stopPropagation()"></td>
+          <td><input type="text" value="${event.ibjjf_rule}" onchange="updateEvent(${i}, 'ibjjf_rule', this.value)" onclick="event.stopPropagation()"></td>
+          <td><input type="text" value="${event.running_score}" onchange="updateEvent(${i}, 'running_score', this.value)" onclick="event.stopPropagation()"></td>
+          <td class="actions">
+            <button class="small secondary" onclick="event.stopPropagation(); moveUp(${i})">↑</button>
+            <button class="small secondary" onclick="event.stopPropagation(); moveDown(${i})">↓</button>
+            <button class="small danger" onclick="event.stopPropagation(); deleteRow(${i})">×</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function save() {
+      const data = {
+        video_file: "Adam Wardzinski vs Roberto Jimenez - 2025 IBJJF Pan Championship [oWVUjZm-ZUc].webm",
+        athlete_1_name: "Adam Piotr Wardzinski",
+        athlete_1_gi_color: "Blue",
+        athlete_2_name: "Roberto Francisco Jimenez",
+        athlete_2_gi_color: "White",
+        events: events,
+        final_score: events.length > 0 ? events[events.length - 1].running_score : "",
+        winner: "Adam Piotr Wardzinski"
+      };
+
+      await fetch('/api/ground-truth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      statusEl.classList.add('show');
+      setTimeout(() => statusEl.classList.remove('show'), 2000);
+    }
+
+    async function loadFromResult() {
+      const response = await fetch('/api/results');
+      const files = await response.json();
+
+      const choice = prompt('Enter result file to import from:\\n\\n' + files.join('\\n'));
+      if (!choice) return;
+
+      const result = await fetch(`/api/results/${choice}`);
+      const data = await result.json();
+
+      events = data.analysis.events;
+      selectedRowIndex = null;
+      render();
+    }
+
+    async function loadGroundTruth() {
+      const response = await fetch('/api/ground-truth');
+      const data = await response.json();
+      if (data && data.events) {
+        events = data.events;
+        render();
+      }
+    }
+
+    loadGroundTruth();
+    render();
+  </script>
+</body>
+</html>

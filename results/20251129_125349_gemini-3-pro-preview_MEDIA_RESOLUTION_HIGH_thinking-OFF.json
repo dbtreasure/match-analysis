@@ -1,0 +1,142 @@
+{
+  "model": "gemini-3-pro-preview",
+  "media_resolution": "MEDIA_RESOLUTION_HIGH",
+  "video_file": "Adam Wardzinski vs Roberto Jimenez - 2025 IBJJF Pan Championship [oWVUjZm-ZUc].webm",
+  "prompt": "Analyze this BJJ match video. For every scoring change (points or advantages), record:\n- The exact timestamp in seconds from the start of the video\n- Which athlete scored\n- Points and/or advantages gained or lost\n- The action that caused the score\n- The applicable IBJJF rule\n\nBe precise with timestamps - watch for when the referee signals the score.",
+  "analysis": {
+    "athlete_1_name": "Adam Piotr Wardzinski",
+    "athlete_1_gi_color": "White",
+    "athlete_2_name": "Roberto Jimenez",
+    "athlete_2_gi_color": "Blue",
+    "events": [
+      {
+        "timestamp_seconds": 32,
+        "athlete": "Roberto Jimenez",
+        "points_change": 2,
+        "advantages_change": 0,
+        "action": "Takedown",
+        "ibjjf_rule": "Art. 4.1",
+        "running_score": "0-2"
+      },
+      {
+        "timestamp_seconds": 73,
+        "athlete": "Roberto Jimenez",
+        "points_change": 0,
+        "advantages_change": 1,
+        "action": "Attempted back take",
+        "ibjjf_rule": "Art. 5.4",
+        "running_score": "0-2 (1 adv)"
+      },
+      {
+        "timestamp_seconds": 108,
+        "athlete": "Roberto Jimenez",
+        "points_change": 0,
+        "advantages_change": 1,
+        "action": "Attempted back take",
+        "ibjjf_rule": "Art. 5.4",
+        "running_score": "0-2 (2 adv)"
+      },
+      {
+        "timestamp_seconds": 124,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": 2,
+        "advantages_change": 0,
+        "action": "Sweep",
+        "ibjjf_rule": "Art. 4.2",
+        "running_score": "2-2 (2 adv)"
+      },
+      {
+        "timestamp_seconds": 139,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": 7,
+        "advantages_change": 0,
+        "action": "Guard pass and Mount",
+        "ibjjf_rule": "Art. 4.3, 4.4",
+        "running_score": "9-2 (2 adv)"
+      },
+      {
+        "timestamp_seconds": 307,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": -7,
+        "advantages_change": 0,
+        "action": "Points retracted by referee decision",
+        "ibjjf_rule": "Referee Decision",
+        "running_score": "2-2 (2 adv)"
+      },
+      {
+        "timestamp_seconds": 315,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": 7,
+        "advantages_change": 0,
+        "action": "Points restored/awarded upon restart/stabilization",
+        "ibjjf_rule": "Referee Decision",
+        "running_score": "9-2 (2 adv)"
+      },
+      {
+        "timestamp_seconds": 499,
+        "athlete": "Roberto Jimenez",
+        "points_change": 2,
+        "advantages_change": 0,
+        "action": "Reversal",
+        "ibjjf_rule": "Art. 4.1",
+        "running_score": "9-4 (2 adv)"
+      },
+      {
+        "timestamp_seconds": 545,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": 2,
+        "advantages_change": 0,
+        "action": "Sweep",
+        "ibjjf_rule": "Art. 4.2",
+        "running_score": "11-4 (2 adv)"
+      },
+      {
+        "timestamp_seconds": 548,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": 4,
+        "advantages_change": 0,
+        "action": "Mount",
+        "ibjjf_rule": "Art. 4.4",
+        "running_score": "15-4 (2 adv)"
+      },
+      {
+        "timestamp_seconds": 557,
+        "athlete": "Roberto Jimenez",
+        "points_change": 2,
+        "advantages_change": 0,
+        "action": "Reversal",
+        "ibjjf_rule": "Art. 4.1",
+        "running_score": "15-6 (2 adv)"
+      },
+      {
+        "timestamp_seconds": 584,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": 2,
+        "advantages_change": 0,
+        "action": "Sweep",
+        "ibjjf_rule": "Art. 4.2",
+        "running_score": "17-6 (2 adv)"
+      },
+      {
+        "timestamp_seconds": 614,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": 3,
+        "advantages_change": 0,
+        "action": "Guard pass",
+        "ibjjf_rule": "Art. 4.3",
+        "running_score": "20-6 (2 adv)"
+      },
+      {
+        "timestamp_seconds": 619,
+        "athlete": "Adam Piotr Wardzinski",
+        "points_change": 4,
+        "advantages_change": 0,
+        "action": "Mount",
+        "ibjjf_rule": "Art. 4.4",
+        "running_score": "24-6 (2 adv)"
+      }
+    ],
+    "final_score": "16-4",
+    "winner": "Adam Piotr Wardzinski"
+  }
+}
