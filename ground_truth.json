@@ -1,0 +1,27 @@
+{
+  "video_file": "Adam Wardzinski vs Roberto Jimenez - 2025 IBJJF Pan Championship [oWVUjZm-ZUc].webm",
+  "athlete_1_name": "Roberto Francisco Jimenez",
+  "athlete_1_gi_color": "Blue",
+  "athlete_2_name": "Adam Piotr Wardzinski",
+  "athlete_2_gi_color": "White",
+  "events": [
+    {
+      "timestamp_seconds": 30,
+      "athlete": "Roberto Francisco Jimenez",
+      "points_change": 2,
+      "advantages_change": 0,
+      "action": "Takedown",
+      "running_score": "2-0"
+    },
+    {
+      "timestamp_seconds": 64,
+      "athlete": "Roberto Francisco Jimenez",
+      "points_change": 0,
+      "advantages_change": 1,
+      "action": "Attempted back take",
+      "running_score": "2-0"
+    }
+  ],
+  "final_score": "2-0",
+  "winner": ""
+}

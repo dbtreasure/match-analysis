@@ -15,8 +15,40 @@
       color: #e0e0e0;
     }
     h1 { margin-bottom: 10px; }
+    h2 { margin-top: 30px; margin-bottom: 15px; font-size: 16px; color: #888; }
     .nav { margin-bottom: 20px; }
     .nav a { color: #60a5fa; }
+    .match-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+      padding: 20px;
+      background: #2a2a2a;
+      border-radius: 8px;
+    }
+    .athlete-card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .athlete-card label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+      color: #888;
+    }
+    .athlete-card input, .athlete-card select {
+      padding: 8px;
+      font-size: 14px;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      border: 1px solid #444;
+      border-radius: 4px;
+    }
+    .athlete-1 { border-left: 4px solid #c084fc; padding-left: 16px; }
+    .athlete-2 { border-left: 4px solid #60a5fa; padding-left: 16px; }
     .controls {
       display: flex;
       gap: 10px;
@@ -78,6 +110,7 @@
       border-bottom: 1px solid #333;
     }
     th { background: #2a2a2a; font-weight: 600; }
+    th .hint { font-weight: normal; color: #888; font-size: 11px; }
     td input, td select {
       width: 100%;
       padding: 6px;
@@ -98,20 +131,47 @@
       padding: 40px;
       color: #888;
     }
+    .athlete-1-color { color: #c084fc; }
+    .athlete-2-color { color: #60a5fa; }
   </style>
 </head>
 <body>
   <h1>Ground Truth Editor</h1>
   <div class="nav"><a href="/">Back to Viewer</a></div>
 
-  <div class="controls">
-    <button onclick="addRow()">+ Add Event</button>
-    <button onclick="addRowAtCurrentTime()">+ Add at Current Time</button>
-    <button class="secondary" onclick="loadFromResult()">Import from Result...</button>
-    <button onclick="save()">Save Ground Truth</button>
-    <span class="status" id="status">Saved!</span>
+  <h2>Match Info</h2>
+  <div class="match-info">
+    <div class="athlete-card athlete-1">
+      <strong class="athlete-1-color">Athlete 1</strong>
+      <label>
+        Name
+        <input type="text" id="athlete1Name" value="Adam Piotr Wardzinski" onchange="updateMatchInfo()">
+      </label>
+      <label>
+        Gi Color
+        <select id="athlete1Gi" onchange="updateMatchInfo()">
+          <option value="White">White</option>
+          <option value="Blue" selected>Blue</option>
+        </select>
+      </label>
+    </div>
+    <div class="athlete-card athlete-2">
+      <strong class="athlete-2-color">Athlete 2</strong>
+      <label>
+        Name
+        <input type="text" id="athlete2Name" value="Roberto Francisco Jimenez" onchange="updateMatchInfo()">
+      </label>
+      <label>
+        Gi Color
+        <select id="athlete2Gi" onchange="updateMatchInfo()">
+          <option value="White" selected>White</option>
+          <option value="Blue">Blue</option>
+        </select>
+      </label>
+    </div>
   </div>
 
+  <h2>Video</h2>
   <video id="video" controls>
     <source src="/video/Adam Wardzinski vs Roberto Jimenez - 2025 IBJJF Pan Championship [oWVUjZm-ZUc].webm" type="video/webm">
   </video>
@@ -124,6 +184,15 @@
     <button class="small secondary" onclick="useCurrentTime()">Use for selected row</button>
   </div>
 
+  <h2>Scoring Events</h2>
+  <div class="controls">
+    <button onclick="addRow()">+ Add Event</button>
+    <button onclick="addRowAtCurrentTime()">+ Add at Current Time</button>
+    <button class="secondary" onclick="loadFromResult()">Import from Result...</button>
+    <button onclick="save()">Save Ground Truth</button>
+    <span class="status" id="status">Saved!</span>
+  </div>
+
   <table>
     <thead>
       <tr>
@@ -132,8 +201,7 @@
         <th>Points</th>
         <th>Adv</th>
         <th>Action</th>
-        <th>IBJJF Rule</th>
-        <th>Running Score</th>
+        <th>Score <span class="hint">(Athlete 1 - Athlete 2)</span></th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -151,14 +219,39 @@
     const emptyState = document.getElementById('emptyState');
     const statusEl = document.getElementById('status');
 
+    let matchInfo = {
+      athlete_1_name: "Adam Piotr Wardzinski",
+      athlete_1_gi_color: "Blue",
+      athlete_2_name: "Roberto Francisco Jimenez",
+      athlete_2_gi_color: "White"
+    };
+
     let events = [];
     let selectedRowIndex = null;
+    let saveTimeout = null;
 
-    // Athletes for dropdown
-    const athletes = [
-      "Adam Piotr Wardzinski",
-      "Roberto Francisco Jimenez"
-    ];
+    function scheduleSave() {
+      if (saveTimeout) clearTimeout(saveTimeout);
+      statusEl.textContent = 'Unsaved...';
+      statusEl.classList.add('show');
+      statusEl.style.background = '#f59e0b';
+      saveTimeout = setTimeout(async () => {
+        await save();
+      }, 5000);
+    }
+
+    function getAthletes() {
+      return [matchInfo.athlete_1_name, matchInfo.athlete_2_name];
+    }
+
+    function updateMatchInfo() {
+      matchInfo.athlete_1_name = document.getElementById('athlete1Name').value;
+      matchInfo.athlete_1_gi_color = document.getElementById('athlete1Gi').value;
+      matchInfo.athlete_2_name = document.getElementById('athlete2Name').value;
+      matchInfo.athlete_2_gi_color = document.getElementById('athlete2Gi').value;
+      render();
+      scheduleSave();
+    }
 
     function formatTime(seconds) {
       const m = Math.floor(seconds / 60);
@@ -182,17 +275,17 @@
       if (selectedRowIndex !== null) {
         events[selectedRowIndex].timestamp_seconds = Math.floor(video.currentTime);
         render();
+        scheduleSave();
       }
     }
 
     function createEmptyEvent() {
       return {
         timestamp_seconds: Math.floor(video.currentTime),
-        athlete: athletes[0],
+        athlete: matchInfo.athlete_1_name,
         points_change: 0,
         advantages_change: 0,
         action: "",
-        ibjjf_rule: "",
         running_score: ""
       };
     }
@@ -201,16 +294,17 @@
       events.push(createEmptyEvent());
       selectedRowIndex = events.length - 1;
       render();
+      scheduleSave();
     }
 
     function addRowAtCurrentTime() {
       const newEvent = createEmptyEvent();
-      // Find insertion point
       let insertIndex = events.findIndex(e => e.timestamp_seconds > newEvent.timestamp_seconds);
       if (insertIndex === -1) insertIndex = events.length;
       events.splice(insertIndex, 0, newEvent);
       selectedRowIndex = insertIndex;
       render();
+      scheduleSave();
     }
 
     function deleteRow(index) {
@@ -218,6 +312,7 @@
       if (selectedRowIndex === index) selectedRowIndex = null;
       else if (selectedRowIndex > index) selectedRowIndex--;
       render();
+      scheduleSave();
     }
 
     function moveUp(index) {
@@ -226,6 +321,7 @@
         if (selectedRowIndex === index) selectedRowIndex--;
         else if (selectedRowIndex === index - 1) selectedRowIndex++;
         render();
+        scheduleSave();
       }
     }
 
@@ -235,6 +331,7 @@
         if (selectedRowIndex === index) selectedRowIndex++;
         else if (selectedRowIndex === index + 1) selectedRowIndex--;
         render();
+        scheduleSave();
       }
     }
 
@@ -250,24 +347,31 @@
       } else {
         events[index][field] = value;
       }
+      scheduleSave();
+    }
+
+    function getAthleteClass(athlete) {
+      if (athlete === matchInfo.athlete_1_name) return 'athlete-1-color';
+      if (athlete === matchInfo.athlete_2_name) return 'athlete-2-color';
+      return '';
     }
 
     function render() {
       emptyState.style.display = events.length === 0 ? 'block' : 'none';
+      const athletes = getAthletes();
 
       tbody.innerHTML = events.map((event, i) => `
-        <tr class="${selectedRowIndex === i ? 'selected' : ''}" onclick="selectRow(${i})" style="${selectedRowIndex === i ? 'background: #333;' : ''}">
+        <tr onclick="selectRow(${i})" style="${selectedRowIndex === i ? 'background: #333;' : ''}">
           <td><input type="number" value="${event.timestamp_seconds}" onchange="updateEvent(${i}, 'timestamp_seconds', this.value)" onclick="event.stopPropagation()"></td>
           <td>
-            <select onchange="updateEvent(${i}, 'athlete', this.value)" onclick="event.stopPropagation()">
+            <select class="${getAthleteClass(event.athlete)}" onchange="updateEvent(${i}, 'athlete', this.value)" onclick="event.stopPropagation()">
               ${athletes.map(a => `<option value="${a}" ${event.athlete === a ? 'selected' : ''}>${a.split(' ')[0]}</option>`).join('')}
             </select>
           </td>
           <td><input type="number" value="${event.points_change}" onchange="updateEvent(${i}, 'points_change', this.value)" onclick="event.stopPropagation()"></td>
           <td><input type="number" value="${event.advantages_change}" onchange="updateEvent(${i}, 'advantages_change', this.value)" onclick="event.stopPropagation()"></td>
           <td><input type="text" value="${event.action}" onchange="updateEvent(${i}, 'action', this.value)" onclick="event.stopPropagation()"></td>
-          <td><input type="text" value="${event.ibjjf_rule}" onchange="updateEvent(${i}, 'ibjjf_rule', this.value)" onclick="event.stopPropagation()"></td>
-          <td><input type="text" value="${event.running_score}" onchange="updateEvent(${i}, 'running_score', this.value)" onclick="event.stopPropagation()"></td>
+          <td><input type="text" value="${event.running_score}" onchange="updateEvent(${i}, 'running_score', this.value)" onclick="event.stopPropagation()" placeholder="e.g. 2-4"></td>
           <td class="actions">
             <button class="small secondary" onclick="event.stopPropagation(); moveUp(${i})">↑</button>
             <button class="small secondary" onclick="event.stopPropagation(); moveDown(${i})">↓</button>
@@ -280,13 +384,13 @@
     async function save() {
       const data = {
         video_file: "Adam Wardzinski vs Roberto Jimenez - 2025 IBJJF Pan Championship [oWVUjZm-ZUc].webm",
-        athlete_1_name: "Adam Piotr Wardzinski",
-        athlete_1_gi_color: "Blue",
-        athlete_2_name: "Roberto Francisco Jimenez",
-        athlete_2_gi_color: "White",
+        athlete_1_name: matchInfo.athlete_1_name,
+        athlete_1_gi_color: matchInfo.athlete_1_gi_color,
+        athlete_2_name: matchInfo.athlete_2_name,
+        athlete_2_gi_color: matchInfo.athlete_2_gi_color,
         events: events,
         final_score: events.length > 0 ? events[events.length - 1].running_score : "",
-        winner: "Adam Piotr Wardzinski"
+        winner: ""  // Can be set manually if needed
       };
 
       await fetch('/api/ground-truth', {
@@ -295,6 +399,8 @@
         body: JSON.stringify(data)
       });
 
+      statusEl.textContent = 'Saved!';
+      statusEl.style.background = '#22c55e';
       statusEl.classList.add('show');
       setTimeout(() => statusEl.classList.remove('show'), 2000);
     }
@@ -309,7 +415,29 @@
       const result = await fetch(`/api/results/${choice}`);
       const data = await result.json();
 
-      events = data.analysis.events;
+      // Import events, stripping ibjjf_rule field
+      events = data.analysis.events.map(e => ({
+        timestamp_seconds: e.timestamp_seconds,
+        athlete: e.athlete,
+        points_change: e.points_change,
+        advantages_change: e.advantages_change,
+        action: e.action,
+        running_score: e.running_score
+      }));
+
+      // Try to import athlete info if available
+      if (data.analysis.athlete_1_name) {
+        matchInfo.athlete_1_name = data.analysis.athlete_1_name;
+        matchInfo.athlete_1_gi_color = data.analysis.athlete_1_gi_color || "Blue";
+        matchInfo.athlete_2_name = data.analysis.athlete_2_name;
+        matchInfo.athlete_2_gi_color = data.analysis.athlete_2_gi_color || "White";
+
+        document.getElementById('athlete1Name').value = matchInfo.athlete_1_name;
+        document.getElementById('athlete1Gi').value = matchInfo.athlete_1_gi_color;
+        document.getElementById('athlete2Name').value = matchInfo.athlete_2_name;
+        document.getElementById('athlete2Gi').value = matchInfo.athlete_2_gi_color;
+      }
+
       selectedRowIndex = null;
       render();
     }
@@ -319,6 +447,19 @@
       const data = await response.json();
       if (data && data.events) {
         events = data.events;
+
+        if (data.athlete_1_name) {
+          matchInfo.athlete_1_name = data.athlete_1_name;
+          matchInfo.athlete_1_gi_color = data.athlete_1_gi_color || "Blue";
+          matchInfo.athlete_2_name = data.athlete_2_name;
+          matchInfo.athlete_2_gi_color = data.athlete_2_gi_color || "White";
+
+          document.getElementById('athlete1Name').value = matchInfo.athlete_1_name;
+          document.getElementById('athlete1Gi').value = matchInfo.athlete_1_gi_color;
+          document.getElementById('athlete2Name').value = matchInfo.athlete_2_name;
+          document.getElementById('athlete2Gi').value = matchInfo.athlete_2_gi_color;
+        }
+
         render();
       }
     }
