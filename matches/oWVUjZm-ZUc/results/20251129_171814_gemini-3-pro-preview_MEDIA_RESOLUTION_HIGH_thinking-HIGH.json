@@ -1,0 +1,133 @@
+{
+  "model": "gemini-3-pro-preview",
+  "media_resolution": "MEDIA_RESOLUTION_HIGH",
+  "video_file": "Adam Wardzinski vs Roberto Jimenez - 2025 IBJJF Pan Championship [oWVUjZm-ZUc].webm",
+  "prompt": "You are analyzing a BJJ (Brazilian Jiu-Jitsu) competition match video. You have been provided:\n1. The match video\n2. The official IBJJF Rules Book PDF\n\nYour task is to identify and record every scoring change (points, advantages, or penalties) throughout the match.\n\n## Athlete Identification (use this throughout the match)\n\n**Athlete 1 (LEFT side of scoreboard):**\n- Name: ADAM PIOTR WARDZINSKI\n- Gi color: blue\n- Appearance: Curly brown hair, beard\n\n**Athlete 2 (RIGHT side of scoreboard):**\n- Name: ROBERTO FRANCISCO JIMENEZ\n- Gi color: white\n- Appearance: Long blonde hair tied back in a ponytail, beard\n\n**How to tell them apart:** gi color\n\n## How to Identify Scoring Events\n\n1. **Watch the referee** - The referee signals scoring with hand gestures and the scoreboard updates shortly after.\n\n2. **Monitor the scoreboard overlay** - It shows current points, advantages, and penalties for each athlete.\n\n3. **Reference the IBJJF rulebook** for correct point values.\n\n## Point Values (IBJJF Rules)\n\nPoints are ONLY awarded in these amounts:\n- **2 points**: Takedown, Sweep\n- **3 points**: Guard Pass\n- **4 points**: Mount, Back Mount (back control with hooks)\n\nAdvantages are awarded 1 at a time for near-scoring attempts.\nPenalties are given for stalling or rule violations.\n\n## Common Event Patterns\n\n**Guard Pass → Mount sequence**: When an athlete passes the guard (3 pts), they often immediately move to mount (4 pts) within 3-5 seconds. Watch for TWO separate score changes in quick succession.\n\n**Sweep → Pass sequence**: After a sweep (2 pts), the sweeping athlete may quickly pass guard (3 pts).\n\n## For each scoring event, record:\n- timestamp_seconds: Exact time in the video (seconds from start)\n- match_clock: Time shown on the match clock (e.g., \"8:45\")\n- athlete: 1 or 2 (who scored or received penalty)\n- points_change: Points gained/lost (use 0 if only advantage/penalty)\n- advantages_change: Advantages gained/lost (use 0 if only points/penalty)\n- penalties_change: Penalties received (use 0 if only points/advantage)\n- action: Brief description (e.g., \"Takedown\", \"Sweep\", \"Guard pass\", \"Mount\")\n- ibjjf_rule: Rule reference from the rulebook (e.g., \"Art. 4.1 - Takedown\")\n- running_score: Current score as \"athlete1-athlete2\"\n- running_advantages: Current advantages as \"athlete1-athlete2\"\n- running_penalties: Current penalties as \"athlete1-athlete2\"\n\nRecord events when the referee signals or the scoreboard updates, not when the action begins.",
+  "analysis": {
+    "athlete_1_name": "Adam Piotr Wardzinski",
+    "athlete_1_gi_color": "Blue",
+    "athlete_2_name": "Roberto Francisco Jimenez",
+    "athlete_2_gi_color": "White",
+    "events": [
+      {
+        "timestamp_seconds": 33,
+        "match_clock": "9:28",
+        "athlete": "2",
+        "points_change": 2,
+        "advantages_change": 0,
+        "penalties_change": 0,
+        "action": "Takedown",
+        "ibjjf_rule": "Art. 4.1",
+        "running_score": "0-2",
+        "running_advantages": "0-0",
+        "running_penalties": "0-0"
+      },
+      {
+        "timestamp_seconds": 73,
+        "match_clock": "8:48",
+        "athlete": "2",
+        "points_change": 0,
+        "advantages_change": 1,
+        "penalties_change": 0,
+        "action": "Near back take",
+        "ibjjf_rule": "Art. 5.6",
+        "running_score": "0-2",
+        "running_advantages": "0-1",
+        "running_penalties": "0-0"
+      },
+      {
+        "timestamp_seconds": 125,
+        "match_clock": "7:56",
+        "athlete": "1",
+        "points_change": 2,
+        "advantages_change": 0,
+        "penalties_change": 0,
+        "action": "Sweep",
+        "ibjjf_rule": "Art. 4.6",
+        "running_score": "2-2",
+        "running_advantages": "0-1",
+        "running_penalties": "0-0"
+      },
+      {
+        "timestamp_seconds": 135,
+        "match_clock": "7:46",
+        "athlete": "1",
+        "points_change": 3,
+        "advantages_change": 0,
+        "penalties_change": 0,
+        "action": "Guard Pass",
+        "ibjjf_rule": "Art. 4.2",
+        "running_score": "5-2",
+        "running_advantages": "0-1",
+        "running_penalties": "0-0"
+      },
+      {
+        "timestamp_seconds": 142,
+        "match_clock": "7:39",
+        "athlete": "1",
+        "points_change": 4,
+        "advantages_change": 0,
+        "penalties_change": 0,
+        "action": "Mount",
+        "ibjjf_rule": "Art. 4.4",
+        "running_score": "9-2",
+        "running_advantages": "0-1",
+        "running_penalties": "0-0"
+      },
+      {
+        "timestamp_seconds": 535,
+        "match_clock": "1:35",
+        "athlete": "2",
+        "points_change": 0,
+        "advantages_change": 1,
+        "penalties_change": 0,
+        "action": "Near sweep",
+        "ibjjf_rule": "Art. 5.6.6",
+        "running_score": "9-2",
+        "running_advantages": "0-2",
+        "running_penalties": "0-0"
+      },
+      {
+        "timestamp_seconds": 545,
+        "match_clock": "1:24",
+        "athlete": "1",
+        "points_change": 2,
+        "advantages_change": 0,
+        "penalties_change": 0,
+        "action": "Sweep",
+        "ibjjf_rule": "Art. 4.6",
+        "running_score": "11-2",
+        "running_advantages": "0-2",
+        "running_penalties": "0-0"
+      },
+      {
+        "timestamp_seconds": 548,
+        "match_clock": "1:21",
+        "athlete": "1",
+        "points_change": 3,
+        "advantages_change": 0,
+        "penalties_change": 0,
+        "action": "Guard Pass",
+        "ibjjf_rule": "Art. 4.2",
+        "running_score": "14-2",
+        "running_advantages": "0-2",
+        "running_penalties": "0-0"
+      },
+      {
+        "timestamp_seconds": 555,
+        "match_clock": "1:14",
+        "athlete": "1",
+        "points_change": 2,
+        "advantages_change": 0,
+        "penalties_change": 0,
+        "action": "Knee on Belly",
+        "ibjjf_rule": "Art. 4.3",
+        "running_score": "16-2",
+        "running_advantages": "0-2",
+        "running_penalties": "0-0"
+      }
+    ],
+    "final_score": "16-2",
+    "winner": "1"
+  }
+}

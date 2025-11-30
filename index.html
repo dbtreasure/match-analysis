@@ -22,6 +22,15 @@
       margin-bottom: 20px;
       flex-wrap: wrap;
     }
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .control-group label {
+      font-size: 12px;
+      color: #888;
+    }
     select {
       padding: 8px 12px;
       font-size: 14px;
@@ -31,7 +40,7 @@
       border-radius: 4px;
       min-width: 300px;
     }
-    label {
+    .checkbox-label {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -68,18 +77,60 @@
     }
     .points { color: #4ade80; font-weight: 600; }
     .advantage { color: #facc15; }
+    .penalty { color: #f87171; }
     .negative { color: #f87171; }
     .meta { color: #888; font-size: 12px; margin-bottom: 10px; }
+    .match-info {
+      background: #2a2a2a;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+      max-width: 900px;
+    }
+    .match-info h3 { margin: 0 0 12px 0; font-size: 14px; color: #888; }
+    .athletes {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 12px;
+    }
+    .athlete-card {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .athlete-card .name { font-weight: 600; font-size: 16px; }
+    .athlete-card .gi { font-size: 12px; color: #888; }
+    .match-result {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+    }
+    .match-result .label { color: #888; }
+    .match-result .value { font-weight: 600; }
+    .nav { margin-bottom: 20px; }
+    .nav a { color: #60a5fa; }
+    td.clock { color: #888; font-size: 12px; }
+    td.running { font-size: 12px; color: #888; }
   </style>
 </head>
 <body>
   <h1>Match Analysis</h1>
+  <div class="nav"><a href="/editor">Open Editor</a></div>
 
   <div class="controls">
-    <select id="fileSelect">
-      <option value="">Loading...</option>
-    </select>
-    <label>
+    <div class="control-group">
+      <label>Match</label>
+      <select id="matchSelect">
+        <option value="">Loading matches...</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>Result</label>
+      <select id="fileSelect">
+        <option value="">Select a match first</option>
+      </select>
+    </div>
+    <label class="checkbox-label">
       <input type="checkbox" id="showAll">
       Show all events
     </label>
@@ -87,18 +138,41 @@
 
   <div class="meta" id="meta"></div>
 
+  <div class="match-info" id="matchInfo" style="display: none;">
+    <h3>Match Info</h3>
+    <div class="athletes">
+      <div class="athlete-card">
+        <span class="label">Athlete 1</span>
+        <span class="name" id="athlete1Name">-</span>
+        <span class="gi" id="athlete1Gi">-</span>
+      </div>
+      <div class="athlete-card">
+        <span class="label">Athlete 2</span>
+        <span class="name" id="athlete2Name">-</span>
+        <span class="gi" id="athlete2Gi">-</span>
+      </div>
+    </div>
+    <div class="match-result">
+      <div><span class="label">Final Score:</span> <span class="value" id="finalScore">-</span></div>
+      <div><span class="label">Winner:</span> <span class="value" id="winner">-</span></div>
+    </div>
+  </div>
+
   <video id="video" controls>
-    <source src="/video/Adam Wardzinski vs Roberto Jimenez - 2025 IBJJF Pan Championship [oWVUjZm-ZUc].webm" type="video/webm">
+    <source src="" type="video/webm">
   </video>
 
   <table>
     <thead>
       <tr>
-        <th>Time</th>
+        <th>Video Time</th>
+        <th>Clock</th>
         <th>Athlete</th>
         <th>Change</th>
         <th>Action</th>
         <th>Score</th>
+        <th>Adv</th>
+        <th>Pen</th>
       </tr>
     </thead>
     <tbody id="events"></tbody>
@@ -107,20 +181,25 @@
   <script>
     const video = document.getElementById('video');
     const tbody = document.getElementById('events');
+    const matchSelect = document.getElementById('matchSelect');
     const fileSelect = document.getElementById('fileSelect');
     const showAllCheckbox = document.getElementById('showAll');
     const metaDiv = document.getElementById('meta');
 
     let events = [];
     let rows = [];
+    let currentMatchId = null;
+    let athleteNames = { '1': 'Athlete 1', '2': 'Athlete 2' };
 
     function formatTime(seconds) {
+      if (seconds === undefined || seconds === null) return '-';
       const m = Math.floor(seconds / 60);
       const s = seconds % 60;
       return `${m}:${s.toString().padStart(2, '0')}`;
     }
 
     function getChangeClass(event) {
+      if (event.penalties_change > 0) return 'penalty';
       if (event.points_change < 0) return 'negative';
       if (event.points_change > 0) return 'points';
       if (event.advantages_change > 0) return 'advantage';
@@ -128,10 +207,22 @@
     }
 
     function formatChange(event) {
-      if (event.points_change !== 0) {
-        return `${event.points_change > 0 ? '+' : ''}${event.points_change} pts`;
+      const parts = [];
+      if (event.points_change) {
+        parts.push(`${event.points_change > 0 ? '+' : ''}${event.points_change} pts`);
       }
-      return `+${event.advantages_change} adv`;
+      if (event.advantages_change) {
+        parts.push(`+${event.advantages_change} adv`);
+      }
+      if (event.penalties_change) {
+        parts.push(`+${event.penalties_change} pen`);
+      }
+      return parts.length > 0 ? parts.join(', ') : '-';
+    }
+
+    function getAthleteName(athleteNum) {
+      const num = String(athleteNum);
+      return athleteNames[num] || `Athlete ${num}`;
     }
 
     function renderEvents() {
@@ -142,10 +233,13 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${formatTime(event.timestamp_seconds)}</td>
-          <td>${event.athlete}</td>
+          <td class="clock">${event.match_clock || '-'}</td>
+          <td>${getAthleteName(event.athlete)}</td>
           <td class="${getChangeClass(event)}">${formatChange(event)}</td>
-          <td>${event.action}</td>
-          <td>${event.running_score}</td>
+          <td>${event.action || '-'}</td>
+          <td>${event.running_score || '-'}</td>
+          <td class="running">${event.running_advantages || '-'}</td>
+          <td class="running">${event.running_penalties || '-'}</td>
         `;
         tr.classList.add('hidden');
         tbody.appendChild(tr);
@@ -177,41 +271,141 @@
       });
     }
 
-    async function loadResults() {
-      const response = await fetch('/api/results');
-      const files = await response.json();
+    async function loadMatches() {
+      const response = await fetch('/api/matches');
+      const matches = await response.json();
 
-      fileSelect.innerHTML = files.map(f =>
-        `<option value="${f}">${f}</option>`
+      if (matches.length === 0) {
+        matchSelect.innerHTML = '<option value="">No matches found</option>';
+        return;
+      }
+
+      matchSelect.innerHTML = matches.map(m =>
+        `<option value="${m.video_id}">${m.title}</option>`
       ).join('');
 
-      if (files.length > 0) {
-        loadFile(files[0]);
-      }
+      // Load first match by default
+      await selectMatch(matches[0].video_id);
     }
 
-    async function loadFile(filename) {
-      const response = await fetch(`/api/results/${filename}`);
-      const data = await response.json();
+    async function selectMatch(matchId) {
+      currentMatchId = matchId;
 
-      events = data.analysis.events;
-      metaDiv.textContent = `${data.model} | ${data.media_resolution} | ${events.length} events`;
+      // Load match metadata to get video filename
+      const metadataRes = await fetch(`/api/matches/${matchId}`);
+      const metadata = await metadataRes.json();
+
+      // Update video source
+      const videoFilename = metadata.video_filename || 'video.webm';
+      video.src = `/video/${matchId}/${videoFilename}`;
+
+      // Load results for this match
+      const response = await fetch(`/api/matches/${matchId}/results`);
+      const files = await response.json();
+
+      // Check if ground truth exists
+      let options = [];
+      let hasGroundTruth = false;
+      try {
+        const gtRes = await fetch(`/api/matches/${matchId}/ground-truth`);
+        if (gtRes.ok) {
+          options.push('<option value="__ground_truth__">Ground Truth</option>');
+          hasGroundTruth = true;
+        }
+      } catch (e) {}
+
+      options = options.concat(files.map(f =>
+        `<option value="${f}">${f}</option>`
+      ));
+
+      if (options.length === 0) {
+        fileSelect.innerHTML = '<option value="">No results yet</option>';
+        events = [];
+        renderEvents();
+        metaDiv.textContent = 'No analysis results for this match';
+        document.getElementById('matchInfo').style.display = 'none';
+        return;
+      }
+
+      fileSelect.innerHTML = options.join('');
+
+      // Load first option (ground truth if available, else first result)
+      const firstValue = hasGroundTruth ? '__ground_truth__' : files[0];
+      await loadResult(firstValue);
+    }
+
+    function updateMatchInfo(analysis) {
+      const matchInfo = document.getElementById('matchInfo');
+
+      // Update athlete names for event display
+      athleteNames = {
+        '1': analysis.athlete_1_name || 'Athlete 1',
+        '2': analysis.athlete_2_name || 'Athlete 2'
+      };
+
+      // Update match info panel
+      document.getElementById('athlete1Name').textContent = analysis.athlete_1_name || '-';
+      document.getElementById('athlete1Gi').textContent = analysis.athlete_1_gi_color ? `${analysis.athlete_1_gi_color} gi` : '-';
+      document.getElementById('athlete2Name').textContent = analysis.athlete_2_name || '-';
+      document.getElementById('athlete2Gi').textContent = analysis.athlete_2_gi_color ? `${analysis.athlete_2_gi_color} gi` : '-';
+      document.getElementById('finalScore').textContent = analysis.final_score || '-';
+
+      // Show winner name if available
+      const winnerNum = analysis.winner;
+      if (winnerNum) {
+        const winnerName = athleteNames[String(winnerNum)] || `Athlete ${winnerNum}`;
+        document.getElementById('winner').textContent = winnerName;
+      } else {
+        document.getElementById('winner').textContent = '-';
+      }
+
+      matchInfo.style.display = 'block';
+    }
+
+    async function loadResult(filename) {
+      if (!currentMatchId || !filename) return;
+
+      let data;
+      let isGroundTruth = filename === '__ground_truth__';
+
+      if (isGroundTruth) {
+        const response = await fetch(`/api/matches/${currentMatchId}/ground-truth`);
+        data = await response.json();
+        metaDiv.textContent = `Ground Truth | ${data.events?.length || 0} events`;
+      } else {
+        const response = await fetch(`/api/matches/${currentMatchId}/results/${filename}`);
+        data = await response.json();
+        const analysis = data.analysis || data;
+        data = { ...analysis, model: data.model, media_resolution: data.media_resolution };
+        metaDiv.textContent = `${data.model || 'unknown'} | ${data.media_resolution || 'unknown'} | ${data.events?.length || 0} events`;
+      }
+
+      events = data.events || [];
+
+      // Update match info from data
+      updateMatchInfo(data);
 
       // Reset video and render
       rows = [];
       renderEvents();
     }
 
+    matchSelect.addEventListener('change', () => {
+      if (matchSelect.value) {
+        selectMatch(matchSelect.value);
+      }
+    });
+
     fileSelect.addEventListener('change', () => {
       if (fileSelect.value) {
-        loadFile(fileSelect.value);
+        loadResult(fileSelect.value);
       }
     });
 
     showAllCheckbox.addEventListener('change', updateVisibility);
     video.addEventListener('timeupdate', updateVisibility);
 
-    loadResults();
+    loadMatches();
   </script>
 </body>
 </html>

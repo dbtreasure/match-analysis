@@ -1,0 +1,71 @@
+{
+  "video_file": "video.webm",
+  "athlete_1_name": "Tainan Dalpra",
+  "athlete_1_gi_color": "Blue",
+  "athlete_2_name": "Rolando Samson",
+  "athlete_2_gi_color": "White",
+  "events": [
+    {
+      "timestamp_seconds": 75,
+      "match_clock": "8:47",
+      "athlete": "1",
+      "points_change": 0,
+      "advantages_change": 1,
+      "penalties_change": 0,
+      "action": "Sweep attempt",
+      "running_score": "0-0",
+      "running_advantages": "1-0",
+      "running_penalties": "0-0"
+    },
+    {
+      "timestamp_seconds": 134,
+      "match_clock": "7:48",
+      "athlete": "1",
+      "points_change": 2,
+      "advantages_change": 0,
+      "penalties_change": 0,
+      "action": "Sweep",
+      "running_score": "2-0",
+      "running_advantages": "1-0",
+      "running_penalties": "0-0"
+    },
+    {
+      "timestamp_seconds": 281,
+      "match_clock": "5:21",
+      "athlete": "1",
+      "points_change": 0,
+      "advantages_change": -1,
+      "penalties_change": 1,
+      "action": "Advantage removed (Correction) & Penalty for stalling",
+      "running_score": "2-0",
+      "running_advantages": "0-0",
+      "running_penalties": "1-0"
+    },
+    {
+      "timestamp_seconds": 463,
+      "match_clock": "2:19",
+      "athlete": "1",
+      "points_change": 0,
+      "advantages_change": 1,
+      "penalties_change": 0,
+      "action": "Near back take",
+      "running_score": "2-0",
+      "running_advantages": "1-0",
+      "running_penalties": "1-0"
+    },
+    {
+      "timestamp_seconds": 541,
+      "match_clock": "1:02",
+      "athlete": "1",
+      "points_change": 3,
+      "advantages_change": 0,
+      "penalties_change": 0,
+      "action": "Guard pass",
+      "running_score": "5-0",
+      "running_advantages": "1-0",
+      "running_penalties": "1-0"
+    }
+  ],
+  "final_score": "5-0",
+  "winner": "1"
+}

@@ -1,0 +1,20 @@
+{
+  "athlete_1": {
+    "scoreboard_side": "left",
+    "athlete_number": "1",
+    "name": "Roberto Francisco Jimenez",
+    "gi_color": "blue",
+    "belt_indicator": null,
+    "physical_description": "Curly brown hair, beard"
+  },
+  "athlete_2": {
+    "scoreboard_side": "right",
+    "athlete_number": "2",
+    "name": "Adam Piotr Wardzinski",
+    "gi_color": "white",
+    "belt_indicator": null,
+    "physical_description": "Long hair in a pony tail, beard"
+  },
+  "same_gi_color": false,
+  "distinguishing_feature": ""
+}

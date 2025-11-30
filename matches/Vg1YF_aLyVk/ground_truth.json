@@ -1,0 +1,95 @@
+{
+  "video_file": "video.webm",
+  "athlete_1_name": "Andy Murasaki",
+  "athlete_1_gi_color": "Blue",
+  "athlete_2_name": "Tainan Dalpra",
+  "athlete_2_gi_color": "White",
+  "events": [
+    {
+      "timestamp_seconds": 116,
+      "match_clock": "8:08",
+      "athlete": "2",
+      "points_change": 2,
+      "advantages_change": 0,
+      "penalties_change": 0,
+      "action": "Sweep",
+      "running_score": "0-2",
+      "running_advantages": "",
+      "running_penalties": ""
+    },
+    {
+      "timestamp_seconds": 158,
+      "match_clock": "7:44",
+      "athlete": "1",
+      "points_change": 0,
+      "advantages_change": 1,
+      "penalties_change": 0,
+      "action": "Sweep without stabilizing",
+      "running_score": "0-2",
+      "running_advantages": "1-0",
+      "running_penalties": ""
+    },
+    {
+      "timestamp_seconds": 236,
+      "match_clock": "6:26",
+      "athlete": "1",
+      "points_change": 0,
+      "advantages_change": 1,
+      "penalties_change": 0,
+      "action": "Takedown attempt",
+      "running_score": "0-2",
+      "running_advantages": "2-0",
+      "running_penalties": ""
+    },
+    {
+      "timestamp_seconds": 296,
+      "match_clock": "5:54",
+      "athlete": "2",
+      "points_change": 2,
+      "advantages_change": 0,
+      "penalties_change": 0,
+      "action": "Takedown",
+      "running_score": "0-4",
+      "running_advantages": "2-0",
+      "running_penalties": ""
+    },
+    {
+      "timestamp_seconds": 379,
+      "match_clock": "4:47",
+      "athlete": "1",
+      "points_change": 0,
+      "advantages_change": 0,
+      "penalties_change": 1,
+      "action": "Inactivity",
+      "running_score": "0-4",
+      "running_advantages": "2-0",
+      "running_penalties": "1-0"
+    },
+    {
+      "timestamp_seconds": 379,
+      "match_clock": "4:47",
+      "athlete": "2",
+      "points_change": 0,
+      "advantages_change": 0,
+      "penalties_change": 1,
+      "action": "Inactivity",
+      "running_score": "0-4",
+      "running_advantages": "2-0",
+      "running_penalties": "1-1"
+    },
+    {
+      "timestamp_seconds": 663,
+      "match_clock": "0:02",
+      "athlete": "2",
+      "points_change": 2,
+      "advantages_change": 0,
+      "penalties_change": 0,
+      "action": "Sweep",
+      "running_score": "0-6",
+      "running_advantages": "2-0",
+      "running_penalties": "1-1"
+    }
+  ],
+  "final_score": "0-6",
+  "winner": "2"
+}

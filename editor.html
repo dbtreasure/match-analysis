@@ -18,6 +18,57 @@
     h2 { margin-top: 30px; margin-bottom: 15px; font-size: 16px; color: #888; }
     .nav { margin-bottom: 20px; }
     .nav a { color: #60a5fa; }
+
+    /* Match selector */
+    .match-selector {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #2a2a2a;
+      border-radius: 8px;
+    }
+    .match-selector label {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .match-selector select {
+      padding: 8px 12px;
+      font-size: 14px;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      border: 1px solid #444;
+      border-radius: 4px;
+      min-width: 400px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #333;
+    }
+    .tab {
+      padding: 12px 24px;
+      background: transparent;
+      color: #888;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .tab:hover { color: #e0e0e0; }
+    .tab.active {
+      color: #3b82f6;
+      border-bottom-color: #3b82f6;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
     .match-info {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -39,13 +90,17 @@
       font-size: 12px;
       color: #888;
     }
-    .athlete-card input, .athlete-card select {
+    .athlete-card input, .athlete-card select, .athlete-card textarea {
       padding: 8px;
       font-size: 14px;
       background: #1a1a1a;
       color: #e0e0e0;
       border: 1px solid #444;
       border-radius: 4px;
+    }
+    .athlete-card textarea {
+      resize: vertical;
+      min-height: 60px;
     }
     .athlete-1 { border-left: 4px solid #c084fc; padding-left: 16px; }
     .athlete-2 { border-left: 4px solid #60a5fa; padding-left: 16px; }
@@ -123,7 +178,7 @@
     td input[type="number"] { width: 70px; }
     td.actions {
       white-space: nowrap;
-      width: 120px;
+      width: 150px;
     }
     td.actions button { margin: 2px; }
     .empty-state {
@@ -133,86 +188,336 @@
     }
     .athlete-1-color { color: #c084fc; }
     .athlete-2-color { color: #60a5fa; }
+
+    /* Athlete ID specific styles */
+    .athlete-id-section {
+      background: #2a2a2a;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .athlete-id-section h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #888;
+    }
+    .form-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    .form-row label {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+      color: #888;
+    }
+    .form-row input, .form-row select, .form-row textarea {
+      padding: 8px;
+      font-size: 14px;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      border: 1px solid #444;
+      border-radius: 4px;
+    }
+    .form-row textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    .full-width { flex: 1 1 100%; }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+    }
   </style>
 </head>
 <body>
   <h1>Ground Truth Editor</h1>
   <div class="nav"><a href="/">Back to Viewer</a></div>
 
-  <h2>Match Info</h2>
-  <div class="match-info">
-    <div class="athlete-card athlete-1">
-      <strong class="athlete-1-color">Athlete 1</strong>
-      <label>
-        Name
-        <input type="text" id="athlete1Name" value="Adam Piotr Wardzinski" onchange="updateMatchInfo()">
-      </label>
-      <label>
-        Gi Color
-        <select id="athlete1Gi" onchange="updateMatchInfo()">
-          <option value="White">White</option>
-          <option value="Blue" selected>Blue</option>
-        </select>
-      </label>
+  <div class="match-selector">
+    <label>Match:</label>
+    <select id="matchSelect">
+      <option value="">Loading matches...</option>
+    </select>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('scoring')">Scoring Events</button>
+    <button class="tab" onclick="switchTab('athlete-id')">Athlete Identification</button>
+  </div>
+
+  <!-- SCORING EVENTS TAB -->
+  <div id="scoring-tab" class="tab-content active">
+    <h2>Match Info</h2>
+    <div class="match-info">
+      <div class="athlete-card athlete-1">
+        <strong class="athlete-1-color">Athlete 1</strong>
+        <label>
+          Name
+          <input type="text" id="athlete1Name" value="" onchange="updateMatchInfo()">
+        </label>
+        <label>
+          Gi Color
+          <select id="athlete1Gi" onchange="updateMatchInfo()">
+            <option value="White">White</option>
+            <option value="Blue">Blue</option>
+          </select>
+        </label>
+      </div>
+      <div class="athlete-card athlete-2">
+        <strong class="athlete-2-color">Athlete 2</strong>
+        <label>
+          Name
+          <input type="text" id="athlete2Name" value="" onchange="updateMatchInfo()">
+        </label>
+        <label>
+          Gi Color
+          <select id="athlete2Gi" onchange="updateMatchInfo()">
+            <option value="White">White</option>
+            <option value="Blue">Blue</option>
+          </select>
+        </label>
+      </div>
     </div>
-    <div class="athlete-card athlete-2">
-      <strong class="athlete-2-color">Athlete 2</strong>
-      <label>
-        Name
-        <input type="text" id="athlete2Name" value="Roberto Francisco Jimenez" onchange="updateMatchInfo()">
-      </label>
-      <label>
-        Gi Color
-        <select id="athlete2Gi" onchange="updateMatchInfo()">
-          <option value="White" selected>White</option>
-          <option value="Blue">Blue</option>
-        </select>
-      </label>
+
+    <h2>Video</h2>
+    <video id="video" controls>
+      <source src="" type="video/webm">
+    </video>
+
+    <div class="video-controls">
+      <span>Current time:</span>
+      <span class="current-time" id="currentTime">0:00</span>
+      <button class="small secondary" onclick="seekBack(5)">-5s</button>
+      <button class="small secondary" onclick="seekForward(5)">+5s</button>
+      <button class="small secondary" onclick="useCurrentTime()">Use for selected row</button>
+    </div>
+
+    <h2>Scoring Events</h2>
+    <div class="controls">
+      <button onclick="addRow()">+ Add Event</button>
+      <button onclick="addRowAtCurrentTime()">+ Add at Current Time</button>
+      <button class="secondary" onclick="loadFromResult()">Import from Result...</button>
+      <button onclick="save()">Save Ground Truth</button>
+      <span class="status" id="status">Saved!</span>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Video</th>
+          <th>Clock</th>
+          <th>Athlete</th>
+          <th>Pts</th>
+          <th>Adv</th>
+          <th>Pen</th>
+          <th>Action</th>
+          <th>Score <span class="hint">(A1-A2)</span></th>
+          <th>Adv <span class="hint">(A1-A2)</span></th>
+          <th>Pen <span class="hint">(A1-A2)</span></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="events"></tbody>
+    </table>
+
+    <div class="empty-state" id="emptyState">
+      No events yet. Click "+ Add Event" or import from a result file.
     </div>
   </div>
 
-  <h2>Video</h2>
-  <video id="video" controls>
-    <source src="/video/Adam Wardzinski vs Roberto Jimenez - 2025 IBJJF Pan Championship [oWVUjZm-ZUc].webm" type="video/webm">
-  </video>
+  <!-- ATHLETE IDENTIFICATION TAB -->
+  <div id="athlete-id-tab" class="tab-content">
+    <h2>Video Reference</h2>
+    <video id="video2" controls style="max-width: 600px;">
+      <source src="" type="video/webm">
+    </video>
 
-  <div class="video-controls">
-    <span>Current time:</span>
-    <span class="current-time" id="currentTime">0:00</span>
-    <button class="small secondary" onclick="seekBack(5)">-5s</button>
-    <button class="small secondary" onclick="seekForward(5)">+5s</button>
-    <button class="small secondary" onclick="useCurrentTime()">Use for selected row</button>
-  </div>
+    <div class="controls" style="margin-top: 15px;">
+      <button class="secondary" onclick="loadAthleteIdFromResult()">Import from Result...</button>
+      <button onclick="saveAthleteId()">Save Athlete ID Ground Truth</button>
+      <span class="status" id="athleteIdStatus">Saved!</span>
+    </div>
 
-  <h2>Scoring Events</h2>
-  <div class="controls">
-    <button onclick="addRow()">+ Add Event</button>
-    <button onclick="addRowAtCurrentTime()">+ Add at Current Time</button>
-    <button class="secondary" onclick="loadFromResult()">Import from Result...</button>
-    <button onclick="save()">Save Ground Truth</button>
-    <span class="status" id="status">Saved!</span>
-  </div>
+    <div class="athlete-id-section athlete-1" style="margin-top: 20px;">
+      <h3 class="athlete-1-color">Athlete 1 (LEFT side of scoreboard)</h3>
+      <div class="form-row">
+        <label>
+          Scoreboard Side
+          <select id="a1_scoreboard_side">
+            <option value="left" selected>Left</option>
+            <option value="right">Right</option>
+          </select>
+        </label>
+        <label>
+          Athlete Number
+          <select id="a1_athlete_number">
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-row">
+        <label>
+          Name (as shown on scoreboard)
+          <input type="text" id="a1_name" placeholder="ATHLETE NAME">
+        </label>
+        <label>
+          Gi Color
+          <select id="a1_gi_color">
+            <option value="white">White</option>
+            <option value="blue">Blue</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-row">
+        <label>
+          Belt Indicator (if same gi color)
+          <input type="text" id="a1_belt_indicator" placeholder="e.g., yellow coral tip">
+        </label>
+      </div>
+      <div class="form-row">
+        <label class="full-width">
+          Physical Description
+          <textarea id="a1_physical_description" placeholder="Build, hair color, distinguishing features..."></textarea>
+        </label>
+      </div>
+    </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Time (sec)</th>
-        <th>Athlete</th>
-        <th>Points</th>
-        <th>Adv</th>
-        <th>Action</th>
-        <th>Score <span class="hint">(Athlete 1 - Athlete 2)</span></th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="events"></tbody>
-  </table>
+    <div class="athlete-id-section athlete-2">
+      <h3 class="athlete-2-color">Athlete 2 (RIGHT side of scoreboard)</h3>
+      <div class="form-row">
+        <label>
+          Scoreboard Side
+          <select id="a2_scoreboard_side">
+            <option value="left">Left</option>
+            <option value="right" selected>Right</option>
+          </select>
+        </label>
+        <label>
+          Athlete Number
+          <select id="a2_athlete_number">
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-row">
+        <label>
+          Name (as shown on scoreboard)
+          <input type="text" id="a2_name" placeholder="ATHLETE NAME">
+        </label>
+        <label>
+          Gi Color
+          <select id="a2_gi_color">
+            <option value="white">White</option>
+            <option value="blue">Blue</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-row">
+        <label>
+          Belt Indicator (if same gi color)
+          <input type="text" id="a2_belt_indicator" placeholder="e.g., green coral tip">
+        </label>
+      </div>
+      <div class="form-row">
+        <label class="full-width">
+          Physical Description
+          <textarea id="a2_physical_description" placeholder="Build, hair color, distinguishing features..."></textarea>
+        </label>
+      </div>
+    </div>
 
-  <div class="empty-state" id="emptyState">
-    No events yet. Click "+ Add Event" or import from a result file.
+    <div class="athlete-id-section">
+      <h3>Match-Level Info</h3>
+      <div class="checkbox-row">
+        <input type="checkbox" id="same_gi_color">
+        <label for="same_gi_color" style="flex: none; color: #e0e0e0;">Same gi color (both athletes wear same color)</label>
+      </div>
+      <div class="form-row">
+        <label class="full-width">
+          Distinguishing Feature (primary way to tell athletes apart)
+          <input type="text" id="distinguishing_feature" placeholder="e.g., gi color, belt tip color, athlete 1 has beard">
+        </label>
+      </div>
+    </div>
   </div>
 
   <script>
+    // ========== MATCH SELECTION ==========
+    const matchSelect = document.getElementById('matchSelect');
+    let currentMatchId = null;
+    let currentMatchMetadata = null;
+
+    async function loadMatches() {
+      const response = await fetch('/api/matches');
+      const matches = await response.json();
+
+      if (matches.length === 0) {
+        matchSelect.innerHTML = '<option value="">No matches found</option>';
+        return;
+      }
+
+      matchSelect.innerHTML = matches.map(m =>
+        `<option value="${m.video_id}">${m.title}</option>`
+      ).join('');
+
+      // Load first match by default
+      await selectMatch(matches[0].video_id);
+    }
+
+    async function selectMatch(matchId) {
+      currentMatchId = matchId;
+
+      // Load match metadata
+      const metadataRes = await fetch(`/api/matches/${matchId}`);
+      currentMatchMetadata = await metadataRes.json();
+
+      // Update video sources
+      const videoFilename = currentMatchMetadata.video_filename || 'video.webm';
+      const videoUrl = `/video/${matchId}/${videoFilename}`;
+      document.getElementById('video').src = videoUrl;
+      document.getElementById('video2').src = videoUrl;
+
+      // Load ground truth and athlete ID for this match
+      await loadGroundTruth();
+      await loadAthleteIdGroundTruth();
+    }
+
+    matchSelect.addEventListener('change', () => {
+      if (matchSelect.value) {
+        selectMatch(matchSelect.value);
+      }
+    });
+
+    // ========== TAB SWITCHING ==========
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+      if (tab === 'scoring') {
+        document.querySelector('.tab:nth-child(1)').classList.add('active');
+        document.getElementById('scoring-tab').classList.add('active');
+      } else {
+        document.querySelector('.tab:nth-child(2)').classList.add('active');
+        document.getElementById('athlete-id-tab').classList.add('active');
+      }
+    }
+
+    // ========== SCORING EVENTS TAB ==========
     const video = document.getElementById('video');
     const tbody = document.getElementById('events');
     const currentTimeDisplay = document.getElementById('currentTime');
@@ -220,9 +525,9 @@
     const statusEl = document.getElementById('status');
 
     let matchInfo = {
-      athlete_1_name: "Adam Piotr Wardzinski",
+      athlete_1_name: "",
       athlete_1_gi_color: "Blue",
-      athlete_2_name: "Roberto Francisco Jimenez",
+      athlete_2_name: "",
       athlete_2_gi_color: "White"
     };
 
@@ -282,12 +587,25 @@
     function createEmptyEvent() {
       return {
         timestamp_seconds: Math.floor(video.currentTime),
-        athlete: matchInfo.athlete_1_name,
+        match_clock: "",
+        athlete: "1",
         points_change: 0,
         advantages_change: 0,
+        penalties_change: 0,
         action: "",
-        running_score: ""
+        running_score: "",
+        running_advantages: "",
+        running_penalties: ""
       };
+    }
+
+    function getAthleteName(athleteStr) {
+      return athleteStr === "1" ? matchInfo.athlete_1_name : matchInfo.athlete_2_name;
+    }
+
+    function getAthleteDisplayName(athleteStr) {
+      const name = getAthleteName(athleteStr);
+      return name ? name.split(' ')[0] : `Athlete ${athleteStr}`;
     }
 
     function addRow() {
@@ -341,8 +659,14 @@
       render();
     }
 
+    function jumpTo(index) {
+      video.currentTime = events[index].timestamp_seconds;
+      selectedRowIndex = index;
+      render();
+    }
+
     function updateEvent(index, field, value) {
-      if (field === 'timestamp_seconds' || field === 'points_change' || field === 'advantages_change') {
+      if (field === 'timestamp_seconds' || field === 'points_change' || field === 'advantages_change' || field === 'penalties_change') {
         events[index][field] = parseInt(value) || 0;
       } else {
         events[index][field] = value;
@@ -350,29 +674,34 @@
       scheduleSave();
     }
 
-    function getAthleteClass(athlete) {
-      if (athlete === matchInfo.athlete_1_name) return 'athlete-1-color';
-      if (athlete === matchInfo.athlete_2_name) return 'athlete-2-color';
+    function getAthleteClass(athleteStr) {
+      if (athleteStr === "1") return 'athlete-1-color';
+      if (athleteStr === "2") return 'athlete-2-color';
       return '';
     }
 
     function render() {
       emptyState.style.display = events.length === 0 ? 'block' : 'none';
-      const athletes = getAthletes();
 
       tbody.innerHTML = events.map((event, i) => `
         <tr onclick="selectRow(${i})" style="${selectedRowIndex === i ? 'background: #333;' : ''}">
           <td><input type="number" value="${event.timestamp_seconds}" onchange="updateEvent(${i}, 'timestamp_seconds', this.value)" onclick="event.stopPropagation()"></td>
+          <td><input type="text" value="${event.match_clock || ''}" onchange="updateEvent(${i}, 'match_clock', this.value)" onclick="event.stopPropagation()" placeholder="0:00" style="width: 60px;"></td>
           <td>
             <select class="${getAthleteClass(event.athlete)}" onchange="updateEvent(${i}, 'athlete', this.value)" onclick="event.stopPropagation()">
-              ${athletes.map(a => `<option value="${a}" ${event.athlete === a ? 'selected' : ''}>${a.split(' ')[0]}</option>`).join('')}
+              <option value="1" ${event.athlete === "1" ? 'selected' : ''}>${getAthleteDisplayName("1")}</option>
+              <option value="2" ${event.athlete === "2" ? 'selected' : ''}>${getAthleteDisplayName("2")}</option>
             </select>
           </td>
           <td><input type="number" value="${event.points_change}" onchange="updateEvent(${i}, 'points_change', this.value)" onclick="event.stopPropagation()"></td>
           <td><input type="number" value="${event.advantages_change}" onchange="updateEvent(${i}, 'advantages_change', this.value)" onclick="event.stopPropagation()"></td>
+          <td><input type="number" value="${event.penalties_change || 0}" onchange="updateEvent(${i}, 'penalties_change', this.value)" onclick="event.stopPropagation()"></td>
           <td><input type="text" value="${event.action}" onchange="updateEvent(${i}, 'action', this.value)" onclick="event.stopPropagation()"></td>
-          <td><input type="text" value="${event.running_score}" onchange="updateEvent(${i}, 'running_score', this.value)" onclick="event.stopPropagation()" placeholder="e.g. 2-4"></td>
+          <td><input type="text" value="${event.running_score}" onchange="updateEvent(${i}, 'running_score', this.value)" onclick="event.stopPropagation()" placeholder="0-0"></td>
+          <td><input type="text" value="${event.running_advantages || ''}" onchange="updateEvent(${i}, 'running_advantages', this.value)" onclick="event.stopPropagation()" placeholder="0-0"></td>
+          <td><input type="text" value="${event.running_penalties || ''}" onchange="updateEvent(${i}, 'running_penalties', this.value)" onclick="event.stopPropagation()" placeholder="0-0"></td>
           <td class="actions">
+            <button class="small" onclick="event.stopPropagation(); jumpTo(${i})" title="Jump to timestamp">▶</button>
             <button class="small secondary" onclick="event.stopPropagation(); moveUp(${i})">↑</button>
             <button class="small secondary" onclick="event.stopPropagation(); moveDown(${i})">↓</button>
             <button class="small danger" onclick="event.stopPropagation(); deleteRow(${i})">×</button>
@@ -381,19 +710,33 @@
       `).join('');
     }
 
+    function calculateWinner(finalScore) {
+      if (!finalScore) return "0";
+      const parts = finalScore.split("-");
+      if (parts.length !== 2) return "0";
+      const score1 = parseInt(parts[0]) || 0;
+      const score2 = parseInt(parts[1]) || 0;
+      if (score1 > score2) return "1";
+      if (score2 > score1) return "2";
+      return "0";
+    }
+
     async function save() {
+      if (!currentMatchId) return;
+
+      const finalScore = events.length > 0 ? events[events.length - 1].running_score : "";
       const data = {
-        video_file: "Adam Wardzinski vs Roberto Jimenez - 2025 IBJJF Pan Championship [oWVUjZm-ZUc].webm",
+        video_file: currentMatchMetadata?.video_filename || "video.webm",
         athlete_1_name: matchInfo.athlete_1_name,
         athlete_1_gi_color: matchInfo.athlete_1_gi_color,
         athlete_2_name: matchInfo.athlete_2_name,
         athlete_2_gi_color: matchInfo.athlete_2_gi_color,
         events: events,
-        final_score: events.length > 0 ? events[events.length - 1].running_score : "",
-        winner: ""  // Can be set manually if needed
+        final_score: finalScore,
+        winner: calculateWinner(finalScore)
       };
 
-      await fetch('/api/ground-truth', {
+      await fetch(`/api/matches/${currentMatchId}/ground-truth`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -405,27 +748,33 @@
       setTimeout(() => statusEl.classList.remove('show'), 2000);
     }
 
+    function normalizeAthlete(athlete, athlete1Name, athlete2Name) {
+      if (athlete === "1" || athlete === 1) return "1";
+      if (athlete === "2" || athlete === 2) return "2";
+      if (athlete === athlete1Name) return "1";
+      if (athlete === athlete2Name) return "2";
+      if (athlete1Name && String(athlete).includes(athlete1Name.split(' ')[0])) return "1";
+      if (athlete2Name && String(athlete).includes(athlete2Name.split(' ')[0])) return "2";
+      return "1";
+    }
+
     async function loadFromResult() {
-      const response = await fetch('/api/results');
+      if (!currentMatchId) return;
+
+      const response = await fetch(`/api/matches/${currentMatchId}/results`);
       const files = await response.json();
 
-      const choice = prompt('Enter result file to import from:\\n\\n' + files.join('\\n'));
+      if (files.length === 0) {
+        alert('No results found for this match');
+        return;
+      }
+
+      const choice = prompt('Enter result file to import from:\n\n' + files.join('\n'));
       if (!choice) return;
 
-      const result = await fetch(`/api/results/${choice}`);
+      const result = await fetch(`/api/matches/${currentMatchId}/results/${choice}`);
       const data = await result.json();
 
-      // Import events, stripping ibjjf_rule field
-      events = data.analysis.events.map(e => ({
-        timestamp_seconds: e.timestamp_seconds,
-        athlete: e.athlete,
-        points_change: e.points_change,
-        advantages_change: e.advantages_change,
-        action: e.action,
-        running_score: e.running_score
-      }));
-
-      // Try to import athlete info if available
       if (data.analysis.athlete_1_name) {
         matchInfo.athlete_1_name = data.analysis.athlete_1_name;
         matchInfo.athlete_1_gi_color = data.analysis.athlete_1_gi_color || "Blue";
@@ -438,16 +787,29 @@
         document.getElementById('athlete2Gi').value = matchInfo.athlete_2_gi_color;
       }
 
+      events = data.analysis.events.map(e => ({
+        timestamp_seconds: e.timestamp_seconds,
+        match_clock: e.match_clock || "",
+        athlete: normalizeAthlete(e.athlete, data.analysis.athlete_1_name, data.analysis.athlete_2_name),
+        points_change: e.points_change,
+        advantages_change: e.advantages_change,
+        penalties_change: e.penalties_change || 0,
+        action: e.action,
+        running_score: e.running_score,
+        running_advantages: e.running_advantages || "",
+        running_penalties: e.running_penalties || ""
+      }));
+
       selectedRowIndex = null;
       render();
     }
 
     async function loadGroundTruth() {
-      const response = await fetch('/api/ground-truth');
+      if (!currentMatchId) return;
+
+      const response = await fetch(`/api/matches/${currentMatchId}/ground-truth`);
       const data = await response.json();
       if (data && data.events) {
-        events = data.events;
-
         if (data.athlete_1_name) {
           matchInfo.athlete_1_name = data.athlete_1_name;
           matchInfo.athlete_1_gi_color = data.athlete_1_gi_color || "Blue";
@@ -460,11 +822,156 @@
           document.getElementById('athlete2Gi').value = matchInfo.athlete_2_gi_color;
         }
 
+        events = data.events.map(e => ({
+          ...e,
+          athlete: normalizeAthlete(e.athlete, data.athlete_1_name, data.athlete_2_name)
+        }));
+
+        render();
+      } else {
+        // Reset to empty state for new match
+        matchInfo = {
+          athlete_1_name: "",
+          athlete_1_gi_color: "Blue",
+          athlete_2_name: "",
+          athlete_2_gi_color: "White"
+        };
+        events = [];
+        document.getElementById('athlete1Name').value = "";
+        document.getElementById('athlete2Name').value = "";
         render();
       }
     }
 
-    loadGroundTruth();
+    // ========== ATHLETE IDENTIFICATION TAB ==========
+    const athleteIdStatusEl = document.getElementById('athleteIdStatus');
+
+    async function loadAthleteIdFromResult() {
+      if (!currentMatchId) return;
+
+      const response = await fetch(`/api/matches/${currentMatchId}/results`);
+      const files = await response.json();
+
+      if (files.length === 0) {
+        alert('No results found for this match');
+        return;
+      }
+
+      const choice = prompt('Enter result file to import athlete ID from:\n\n' + files.join('\n'));
+      if (!choice) return;
+
+      const result = await fetch(`/api/matches/${currentMatchId}/results/${choice}`);
+      const data = await result.json();
+
+      // The result file has athlete info in data.analysis
+      const analysis = data.analysis;
+
+      // Try to populate from MatchAnalysis fields
+      if (analysis.athlete_1_name) {
+        document.getElementById('a1_name').value = analysis.athlete_1_name;
+        document.getElementById('a1_gi_color').value = (analysis.athlete_1_gi_color || 'white').toLowerCase();
+      }
+      if (analysis.athlete_2_name) {
+        document.getElementById('a2_name').value = analysis.athlete_2_name;
+        document.getElementById('a2_gi_color').value = (analysis.athlete_2_gi_color || 'white').toLowerCase();
+      }
+
+      // Check if gi colors are same
+      const sameGi = analysis.athlete_1_gi_color === analysis.athlete_2_gi_color;
+      document.getElementById('same_gi_color').checked = sameGi;
+
+      // Set distinguishing feature based on gi color difference
+      if (!sameGi) {
+        document.getElementById('distinguishing_feature').value = 'Gi color';
+      }
+
+      athleteIdStatusEl.textContent = 'Imported!';
+      athleteIdStatusEl.style.background = '#22c55e';
+      athleteIdStatusEl.classList.add('show');
+      setTimeout(() => athleteIdStatusEl.classList.remove('show'), 2000);
+    }
+
+    async function saveAthleteId() {
+      if (!currentMatchId) return;
+
+      const data = {
+        athlete_1: {
+          scoreboard_side: document.getElementById('a1_scoreboard_side').value,
+          athlete_number: document.getElementById('a1_athlete_number').value,
+          name: document.getElementById('a1_name').value,
+          gi_color: document.getElementById('a1_gi_color').value,
+          belt_indicator: document.getElementById('a1_belt_indicator').value || null,
+          physical_description: document.getElementById('a1_physical_description').value
+        },
+        athlete_2: {
+          scoreboard_side: document.getElementById('a2_scoreboard_side').value,
+          athlete_number: document.getElementById('a2_athlete_number').value,
+          name: document.getElementById('a2_name').value,
+          gi_color: document.getElementById('a2_gi_color').value,
+          belt_indicator: document.getElementById('a2_belt_indicator').value || null,
+          physical_description: document.getElementById('a2_physical_description').value
+        },
+        same_gi_color: document.getElementById('same_gi_color').checked,
+        distinguishing_feature: document.getElementById('distinguishing_feature').value
+      };
+
+      await fetch(`/api/matches/${currentMatchId}/athlete-id-ground-truth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      athleteIdStatusEl.textContent = 'Saved!';
+      athleteIdStatusEl.style.background = '#22c55e';
+      athleteIdStatusEl.classList.add('show');
+      setTimeout(() => athleteIdStatusEl.classList.remove('show'), 2000);
+    }
+
+    async function loadAthleteIdGroundTruth() {
+      if (!currentMatchId) return;
+
+      const response = await fetch(`/api/matches/${currentMatchId}/athlete-id-ground-truth`);
+      const data = await response.json();
+      if (data) {
+        if (data.athlete_1) {
+          document.getElementById('a1_scoreboard_side').value = data.athlete_1.scoreboard_side || 'left';
+          document.getElementById('a1_athlete_number').value = data.athlete_1.athlete_number || '1';
+          document.getElementById('a1_name').value = data.athlete_1.name || '';
+          document.getElementById('a1_gi_color').value = data.athlete_1.gi_color || 'white';
+          document.getElementById('a1_belt_indicator').value = data.athlete_1.belt_indicator || '';
+          document.getElementById('a1_physical_description').value = data.athlete_1.physical_description || '';
+        }
+        if (data.athlete_2) {
+          document.getElementById('a2_scoreboard_side').value = data.athlete_2.scoreboard_side || 'right';
+          document.getElementById('a2_athlete_number').value = data.athlete_2.athlete_number || '2';
+          document.getElementById('a2_name').value = data.athlete_2.name || '';
+          document.getElementById('a2_gi_color').value = data.athlete_2.gi_color || 'white';
+          document.getElementById('a2_belt_indicator').value = data.athlete_2.belt_indicator || '';
+          document.getElementById('a2_physical_description').value = data.athlete_2.physical_description || '';
+        }
+        document.getElementById('same_gi_color').checked = data.same_gi_color || false;
+        document.getElementById('distinguishing_feature').value = data.distinguishing_feature || '';
+      } else {
+        // Reset form for new match
+        document.getElementById('a1_scoreboard_side').value = 'left';
+        document.getElementById('a1_athlete_number').value = '1';
+        document.getElementById('a1_name').value = '';
+        document.getElementById('a1_gi_color').value = 'white';
+        document.getElementById('a1_belt_indicator').value = '';
+        document.getElementById('a1_physical_description').value = '';
+        document.getElementById('a2_scoreboard_side').value = 'right';
+        document.getElementById('a2_athlete_number').value = '2';
+        document.getElementById('a2_name').value = '';
+        document.getElementById('a2_gi_color').value = 'white';
+        document.getElementById('a2_belt_indicator').value = '';
+        document.getElementById('a2_physical_description').value = '';
+        document.getElementById('same_gi_color').checked = false;
+        document.getElementById('distinguishing_feature').value = '';
+      }
+    }
+
+    // ========== INIT ==========
+    loadMatches();
     render();
   </script>
 </body>

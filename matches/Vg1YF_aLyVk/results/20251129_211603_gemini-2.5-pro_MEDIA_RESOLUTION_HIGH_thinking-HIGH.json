@@ -1,0 +1,120 @@
+{
+  "model": "gemini-2.5-pro",
+  "media_resolution": "MEDIA_RESOLUTION_HIGH",
+  "video_file": "video.webm",
+  "prompt": "You are analyzing a BJJ (Brazilian Jiu-Jitsu) competition match video. You have been provided:\n1. The match video\n2. The official IBJJF Rules Book PDF\n\nYour task is to identify and record every scoring change (points, advantages, or penalties) throughout the match.\n\n## Athlete Identification (use this throughout the match)\n\n**Athlete 1 (LEFT side of scoreboard):**\n- Name: ANDY TOMAS MURASAKI PEREIRA\n- Gi color: white\n- Appearance: Muscular build with short, light brown hair in a buzzcut style.\n\n**Athlete 2 (RIGHT side of scoreboard):**\n- Name: TAINAN DALPRA COSTA\n- Gi color: blue\n- Appearance: Athletic build with short dark hair.\n\n**How to tell them apart:** The athletes are wearing different colored gis: one white and one blue.\n\n## How to Identify Scoring Events\n\n1. **Watch the referee** - The referee signals scoring with hand gestures and the scoreboard updates shortly after.\n\n2. **Monitor the scoreboard overlay** - It shows current points, advantages, and penalties for each athlete.\n\n3. **Reference the IBJJF rulebook** for correct point values.\n\n## Scoring Reference (IBJJF Rules)\n\n**Point Values:**\n- 2 points: Takedown, Sweep, Knee on belly\n- 3 points: Guard pass\n- 4 points: Mount, Back control (back mount with hooks)\n\n**Common Scoring Sequences:**\n\nWhen positions flow continuously, points accumulate. Watch for these patterns:\n\n1. **Guard Pass → Mount (7 points total)**\n   - Athlete passes guard: +3 points (score becomes X-3 or 3-X)\n   - Same athlete achieves mount 2-5 seconds later: +4 points (score becomes X-7 or 7-X)\n   - These are TWO separate events to record\n\n2. **Takedown → Guard Pass → Mount (9 points total)**\n   - Takedown: +2, then Pass: +3, then Mount: +4\n   - Three separate events\n\n3. **Sweep → Guard Pass (5 points total)**\n   - Sweep from guard: +2 points\n   - Same athlete passes guard: +3 points\n\n**Advantages (1 at a time):**\n- Near-completion of any scoring position (almost passed guard, almost swept, etc.)\n- Near-submission attempts\n\n**Key Rule:** Each scoring position is a SEPARATE event. A guard pass at 2:00 and mount at 2:03 should be recorded as two events, not one \"7 point\" event.\n\n## For each scoring event, record:\n- timestamp_seconds: Exact time in the video (seconds from start)\n- match_clock: Time shown on the match clock (e.g., \"8:45\")\n- athlete: 1 or 2 (who scored or received penalty)\n- points_change: Points gained/lost (use 0 if only advantage/penalty)\n- advantages_change: Advantages gained/lost (use 0 if only points/penalty)\n- penalties_change: Penalties received (use 0 if only points/advantage)\n- action: Brief description (e.g., \"Takedown\", \"Sweep\", \"Guard pass\", \"Mount\")\n- ibjjf_rule: Rule reference from the rulebook (e.g., \"Art. 4.1 - Takedown\")\n- running_score: Current score as \"athlete1-athlete2\"\n- running_advantages: Current advantages as \"athlete1-athlete2\"\n- running_penalties: Current penalties as \"athlete1-athlete2\"\n\nRecord events when the referee signals or the scoreboard updates, not when the action begins.",
+  "analysis": {
+    "athlete_1_name": "Andy Tomas Murasaki Pereira",
+    "athlete_1_gi_color": "white",
+    "athlete_2_name": "Tainan Dalpra Costa",
+    "athlete_2_gi_color": "blue",
+    "events": [
+      {
+        "timestamp_seconds": 129,
+        "match_clock": "8:01",
+        "athlete": "2",
+        "points_change": 2,
+        "advantages_change": 0,
+        "penalties_change": 0,
+        "action": "Sweep",
+        "ibjjf_rule": "Art. 4.6.1",
+        "running_score": "0-2",
+        "running_advantages": "0-0",
+        "running_penalties": "0-0"
+      },
+      {
+        "timestamp_seconds": 160,
+        "match_clock": "7:41",
+        "athlete": "1",
+        "points_change": 0,
+        "advantages_change": 1,
+        "penalties_change": 0,
+        "action": "Near sweep",
+        "ibjjf_rule": "Art. 5.6.6",
+        "running_score": "0-2",
+        "running_advantages": "1-0",
+        "running_penalties": "0-0"
+      },
+      {
+        "timestamp_seconds": 246,
+        "match_clock": "6:23",
+        "athlete": "1",
+        "points_change": 0,
+        "advantages_change": 1,
+        "penalties_change": 0,
+        "action": "Near takedown",
+        "ibjjf_rule": "Art. 5.6.1",
+        "running_score": "0-2",
+        "running_advantages": "2-0",
+        "running_penalties": "0-0"
+      },
+      {
+        "timestamp_seconds": 295,
+        "match_clock": "5:56",
+        "athlete": "2",
+        "points_change": 2,
+        "advantages_change": 0,
+        "penalties_change": 0,
+        "action": "Takedown",
+        "ibjjf_rule": "Art. 4.1",
+        "running_score": "0-4",
+        "running_advantages": "2-0",
+        "running_penalties": "0-0"
+      },
+      {
+        "timestamp_seconds": 379,
+        "match_clock": "4:46",
+        "athlete": "1",
+        "points_change": 0,
+        "advantages_change": 0,
+        "penalties_change": 1,
+        "action": "Penalty (Lack of Combativeness)",
+        "ibjjf_rule": "Art. 6.2.1",
+        "running_score": "0-4",
+        "running_advantages": "2-0",
+        "running_penalties": "1-0"
+      },
+      {
+        "timestamp_seconds": 379,
+        "match_clock": "4:46",
+        "athlete": "2",
+        "points_change": 0,
+        "advantages_change": 0,
+        "penalties_change": 1,
+        "action": "Penalty (Lack of Combativeness)",
+        "ibjjf_rule": "Art. 6.2.1",
+        "running_score": "0-4",
+        "running_advantages": "2-0",
+        "running_penalties": "1-1"
+      },
+      {
+        "timestamp_seconds": 555,
+        "match_clock": "1:54",
+        "athlete": "1",
+        "points_change": 0,
+        "advantages_change": 0,
+        "penalties_change": 1,
+        "action": "2nd Penalty (Lack of Combativeness), results in an advantage for the opponent",
+        "ibjjf_rule": "Art. 7.2.1",
+        "running_score": "0-4",
+        "running_advantages": "2-1",
+        "running_penalties": "2-1"
+      },
+      {
+        "timestamp_seconds": 659,
+        "match_clock": "0:08",
+        "athlete": "2",
+        "points_change": 2,
+        "advantages_change": 0,
+        "penalties_change": 0,
+        "action": "Sweep",
+        "ibjjf_rule": "Art. 4.6.1",
+        "running_score": "0-6",
+        "running_advantages": "2-1",
+        "running_penalties": "2-1"
+      }
+    ],
+    "final_score": "0-6",
+    "winner": "2"
+  }
+}

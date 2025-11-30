@@ -1,0 +1,20 @@
+{
+  "athlete_1": {
+    "scoreboard_side": "left",
+    "athlete_number": "1",
+    "name": "Andy Murasaki",
+    "gi_color": "blue",
+    "belt_indicator": null,
+    "physical_description": "Black short to medium length hair"
+  },
+  "athlete_2": {
+    "scoreboard_side": "right",
+    "athlete_number": "2",
+    "name": "Tainan Dalpra",
+    "gi_color": "white",
+    "belt_indicator": null,
+    "physical_description": "Buzz cut, light brown hair"
+  },
+  "same_gi_color": false,
+  "distinguishing_feature": ""
+}
